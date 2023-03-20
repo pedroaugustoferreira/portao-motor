@@ -46,6 +46,7 @@ void setup()
   digitalWrite(pin_54_sensor_fim_do_fechamento, desativado);
 
   Serial.begin(9600);
+  Serial.println("Iniciando");
 }
 
 void debug()
