@@ -10,7 +10,8 @@
 RCSwitch mySwitch = RCSwitch();
 
 // Definição dos pinos e variáveis
-const int pushbutton = 5; // GPIO5 = D1
+const int sensor_fechado = 5; // GPIO5 = D1
+const int sensor_aberto = 14; // GPIO5 = D5
 const int ABRINDO = 0;
 const int PARADO = 1;
 const int FECHANDO = 2;
@@ -21,9 +22,9 @@ int ultima_acao;
 void setup() {
   // Configuração inicial
   Serial.begin(9600);
-  mySwitch.enableReceive(4); // Receptor no pino 4
-  pinMode(pushbutton, INPUT_PULLUP); // Define o pino do botão como entrada com pull-up
-
+  mySwitch.enableReceive(4); // Receptor no pino 4 GPIO4 = D2
+  pinMode(sensor_fechado, INPUT_PULLUP); // Define o pino do botão como entrada com pull-up
+  pinMode(sensor_aberto, INPUT_PULLUP);
   Serial.println("Setup concluído");
 }
 
@@ -66,9 +67,14 @@ void loop() {
   }
 
   // Verifica se o botão foi pressionado
-  if (digitalRead(pushbutton) == LOW) {
+  if (digitalRead(sensor_fechado) == LOW) {
     Serial.println("Portão fechado por completo");
     proximo_estado = ABRINDO;
+    delay(2000); // Atraso para evitar múltiplas leituras do botão
+  }
+    if (digitalRead(sensor_aberto) == LOW) {
+    Serial.println("Portão aberto por completo");
+    proximo_estado = FECHANDO;
     delay(2000); // Atraso para evitar múltiplas leituras do botão
   }
 }
