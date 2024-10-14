@@ -17,7 +17,8 @@ const int PARADO = 1;
 const int FECHANDO = 2;
 
 const int pino_ir = 0; // mega pino 2
-const int rele_aberto = 52;
+const int rele_aberto = 22;
+const int rele_fechado = 26;
 
 int proximo_estado = ABRINDO;
 int ultima_acao;
@@ -30,8 +31,10 @@ void setup() {
   pinMode(sensor_aberto, INPUT_PULLUP);
 
   pinMode(rele_aberto, OUTPUT);
-  delay(1000);
   digitalWrite(rele_aberto, HIGH);
+
+  pinMode(rele_fechado, OUTPUT);
+  digitalWrite(rele_fechado, HIGH);
 
   Serial.println("Setup concluído");
 }
@@ -44,16 +47,20 @@ void loop() {
       
       Serial.println("Portão Abrindo");
       digitalWrite(rele_aberto, LOW);
+      digitalWrite(rele_fechado, HIGH);
       proximo_estado = PARADO;
+      delay(2000);
     } 
     else if (proximo_estado == FECHANDO) {
       Serial.println("Portão Fechando");
       digitalWrite(rele_aberto, HIGH);
+      digitalWrite(rele_fechado, LOW);
       proximo_estado = PARADO;
     } 
     else if (proximo_estado == PARADO) {
       Serial.println("Portão Parado");
       digitalWrite(rele_aberto, HIGH);
+      digitalWrite(rele_fechado, HIGH);
 
       // Alterna o próximo estado entre ABRINDO e FECHANDO
       if (ultima_acao == ABRINDO) {
@@ -65,7 +72,7 @@ void loop() {
       }
     }
 
-    delay(2000); // Atraso para simular a ação
+    delay(1000); // Atraso para simular a ação
     mySwitch.resetAvailable(); // Reseta o status de disponibilidade do receptor
 
     // (Comentado) Código para depuração - Recebimento de dados do RCSwitch
@@ -82,14 +89,16 @@ void loop() {
   if (digitalRead(sensor_fechado) == LOW) {
     Serial.println("Portão fechado por completo");
     digitalWrite(rele_aberto, HIGH);
+    digitalWrite(rele_fechado, HIGH);
     proximo_estado = ABRINDO;
-    delay(2000); // Atraso para evitar múltiplas leituras do botão
+    delay(1000); // Atraso para evitar múltiplas leituras do botão
   }
     if (digitalRead(sensor_aberto) == LOW) {
     Serial.println("Portão aberto por completo");
     digitalWrite(rele_aberto, HIGH);
+    digitalWrite(rele_fechado, HIGH);
     proximo_estado = FECHANDO;
-    delay(2000); // Atraso para evitar múltiplas leituras do botão
+    delay(1000); // Atraso para evitar múltiplas leituras do botão
   }
 
 }
