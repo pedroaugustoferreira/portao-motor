@@ -17,7 +17,7 @@ const int PARADO = 1;
 const int FECHANDO = 2;
 
 const int pino_ir = 0; // mega pino 2
-const int rele_aberto = 7;
+const int rele_aberto = 52;
 
 int proximo_estado = ABRINDO;
 int ultima_acao;
@@ -28,8 +28,11 @@ void setup() {
   mySwitch.enableReceive(pino_ir); // Receptor no pino 4 GPIO4 = D2
   pinMode(sensor_fechado, INPUT_PULLUP); // Define o pino do botão como entrada com pull-up
   pinMode(sensor_aberto, INPUT_PULLUP);
+
   pinMode(rele_aberto, OUTPUT);
-  digitalWrite(rele_aberto, LOW);
+  delay(1000);
+  digitalWrite(rele_aberto, HIGH);
+
   Serial.println("Setup concluído");
 }
 
@@ -38,16 +41,19 @@ void loop() {
   if (mySwitch.available()) {
     // Alterna entre os estados
     if (proximo_estado == ABRINDO) {
+      
       Serial.println("Portão Abrindo");
       digitalWrite(rele_aberto, LOW);
       proximo_estado = PARADO;
     } 
     else if (proximo_estado == FECHANDO) {
       Serial.println("Portão Fechando");
+      digitalWrite(rele_aberto, HIGH);
       proximo_estado = PARADO;
     } 
     else if (proximo_estado == PARADO) {
       Serial.println("Portão Parado");
+      digitalWrite(rele_aberto, HIGH);
 
       // Alterna o próximo estado entre ABRINDO e FECHANDO
       if (ultima_acao == ABRINDO) {
@@ -75,12 +81,15 @@ void loop() {
   // Verifica se o botão foi pressionado
   if (digitalRead(sensor_fechado) == LOW) {
     Serial.println("Portão fechado por completo");
+    digitalWrite(rele_aberto, HIGH);
     proximo_estado = ABRINDO;
     delay(2000); // Atraso para evitar múltiplas leituras do botão
   }
     if (digitalRead(sensor_aberto) == LOW) {
     Serial.println("Portão aberto por completo");
+    digitalWrite(rele_aberto, HIGH);
     proximo_estado = FECHANDO;
     delay(2000); // Atraso para evitar múltiplas leituras do botão
   }
+
 }
