@@ -11,7 +11,7 @@ RCSwitch mySwitch = RCSwitch();
 
 // Definição dos pinos e variáveis
 const int sensor_fechado = 8; // GPIO5 = D1
-const int sensor_aberto = 14; // GPIO5 = D5
+const int sensor_aberto = 5; // GPIO5 = D5
 const int ABRINDO = 0;
 const int PARADO = 1;
 const int FECHANDO = 2;
@@ -71,6 +71,15 @@ void loop() {
         ultima_acao = ABRINDO;
       }
     }
+
+
+    Serial.print("Recebido: ");
+    Serial.print(mySwitch.getReceivedValue());      
+    Serial.print(" / ");
+    Serial.print(mySwitch.getReceivedBitlength());
+    Serial.print("bit ");
+    Serial.print("Protocolo: ");
+    Serial.println(mySwitch.getReceivedProtocol());
 
     delay(1000); // Atraso para simular a ação
     mySwitch.resetAvailable(); // Reseta o status de disponibilidade do receptor
